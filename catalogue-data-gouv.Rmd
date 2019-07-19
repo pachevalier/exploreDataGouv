@@ -34,30 +34,4 @@ readr::read_csv2(file = url$reuse) %>%
 
 
 
-## Anomalies
-
-### Réutilisations sans jeu de données associé
-
-```{r message=FALSE, echo=FALSE}
-url$reuse %>%
-  readr::read_csv2() %>%
-  filter(is.na(datasets)) %>%
-  nrow()
-```
-
-### Datasets réutilisés mais non exportés dans le fichier de référence
-
-```{r echo=FALSE, message=FALSE}
-readr::read_csv2(file = url$reuse) %>%
-  separate_rows(datasets, sep = ",", convert = FALSE)  %>%
-  filter(is.na(datasets) == FALSE) %>%
-  select(datasets) %>%
-  distinct() %>%
-  anti_join(
-    y = read_csv2(file = url$datasets), 
-    by = c("datasets" = "id")
-  ) %>%
-  glimpse()
-```
-
 
