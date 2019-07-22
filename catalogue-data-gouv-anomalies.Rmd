@@ -1,0 +1,64 @@
+---
+title: "R Notebook"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+
+```{r setup, echo=FALSE, message=FALSE}
+library(curl)
+library(httr)
+library(purrr)
+library(tidyverse)
+library(DT)
+GET("https://www.data.gouv.fr/api/1/datasets/5d13a8b6634f41070a43dff3/") %>%
+  content() %>%
+  pluck("resources") %>%
+  map_chr("title", .depth = 1)
+
+df_datasets <- GET("https://www.data.gouv.fr/api/1/datasets/5d13a8b6634f41070a43dff3/") %>%
+  content() %>%
+  pluck("resources") %>%
+  pluck(6) %>%
+  pluck("latest") %>%
+  read_csv2()
+
+df_reuses <- GET("https://www.data.gouv.fr/api/1/datasets/5d13a8b6634f41070a43dff3/") %>%
+  content() %>%
+  pluck("resources") %>%
+  pluck(2) %>%
+  pluck("latest") %>%
+  read_csv2()
+```
+
+## Anomalies
+
+### Réutilisations sans jeu de données associé
+
+```{r message=FALSE, echo=FALSE}
+df_reuses %>%
+  filter(is.na(datasets)) %>%
+  nrow()
+```
+
+### Datasets réutilisés mais non exportés dans le fichier de référence
+
+```{r echo=FALSE, message=FALSE}
+df_missingdatasets <- df_reuses %>%
+  separate_rows(datasets, sep = ",", convert = FALSE)  %>%
+  filter(is.na(datasets) == FALSE) %>%
+  select(datasets) %>%
+  distinct() %>%
+  anti_join(
+    y = df_datasets, 
+    by = c("datasets" = "id")
+  )
+
+df_missingdatasets %>% nrow()
+```
+
+```{r echo=FALSE, message=FALSE, results='asis'}
+df_missingdatasets %>%  pull()
+```
+
