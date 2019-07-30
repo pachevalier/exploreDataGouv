@@ -20,7 +20,7 @@ library(dgfr)
   plot_stations_meteo()
 ```
 
-## Station météo de Purpon
+## Station météo de Purpan
 
 * [Données sources](https://www.data.gouv.fr/fr/datasets/5d31439806e3e77d64e75019/#_)
 
