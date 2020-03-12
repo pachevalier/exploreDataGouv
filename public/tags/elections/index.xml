@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>elections on A Hugo website</title>
+    <link>/tags/elections/</link>
+    <description>Recent content in elections on A Hugo website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 03 Mar 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/elections/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Candidats aux élections municipales 2020</title>
+      <link>/2020/03/03/candidats-aux-%C3%A9lections-municipales-2020/</link>
+      <pubDate>Tue, 03 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/03/03/candidats-aux-%C3%A9lections-municipales-2020/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

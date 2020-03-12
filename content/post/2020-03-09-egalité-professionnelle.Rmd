@@ -1,0 +1,66 @@
+---
+title: "L'indice d'égalité professionnelle"
+author: "Paul-Antoine Chevalier"
+date: '2020-03-09'
+slug: egalité-professionnelle
+tags: []
+categories: []
+---
+
+Les données de l'index d'égalité professionnelle sont téléchargeables ici : https://index-egapro.travail.gouv.fr/consulter-index. 
+
+```{r, echo=FALSE, comment=FALSE, message=FALSE}
+library(tidyverse)
+library(here)
+library(tricky)
+library(ggthemes)
+library(httr)
+knitr::opts_chunk$set(comment=NA, echo=FALSE)
+table_egalite <- 
+  here("content/data", "index-egalite-hf.csv") %>%
+    read_csv(
+      file = ., 
+      col_types = cols(
+        SIREN = col_character(), 
+        Note = col_number()
+        )
+    ) %>%
+  set_standard_names() %>%
+  filter(is.na(annee) == FALSE)
+```
+
+## Répartition des notes en 2018 et 2019
+
+```{r}
+table_egalite %>% 
+  ggplot() + 
+  geom_histogram(
+    mapping = aes(x = note), 
+    color = "white"
+      ) + 
+  facet_wrap(~ annee) + 
+  theme_fivethirtyeight()
+```
+
+
+```{r}
+get_unitelegale <- function(siren, endpoint = "https://entreprise.data.gouv.fr/api/sirene/") {
+  paste0(endpoint, "v3/unites_legales/", siren) %>%
+    httr::GET() %>%
+    httr::content() %>%
+    magrittr::extract2("unite_legale") %>%
+    purrr::discard(.p = is.list) %>%
+    purrr::map_if(.p = is.null, .f = function(x) {x = ""}) %>%
+    tibble::as_tibble()
+  }
+#get_unitelegale(siren = "382357721")
+get_unitelegale(siren = "828465187")
+c("828465187", "382357721") %>%
+  map_df(.f = get_unitelegale)
+```
+
+```{r}
+table_siren <- table_egalite$siren %>% map_df(.f = get_unitelegale)
+table_egalite2 <- table_egalite %>% left_join(y = table_siren, by = "siren")
+```
+
